@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./dist",
+    "module": "ES6",
+    "target": "ES6",
+    "lib": ["ES6", "DOM", "ES2016", "ES2017"],
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "typeRoots": ["index.d.ts", "node_modules/@types", "./src/types"]
+  },
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules"]
+}

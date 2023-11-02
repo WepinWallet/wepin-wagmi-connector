@@ -1,0 +1,48 @@
+{
+  "name": "@wepin/wagmi-connector",
+  "version": "0.0.1-alpha",
+  "description": "Wepin wagmi connector",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "author": "IoTrust, Co., Ltd.",
+  "homepage": "https://github.com/WepinWallet/wepin-wagmi-connector/",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WepinWallet/wepin-wagmi-connector.git"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production tsc -p . --sourceMap true",
+    "build:watch": "NODE_ENV=production tsc -p . --sourceMap true --watch",
+    "lint": "eslint --ext .tsx,.ts src/",
+    "format": "prettier --check ./src"
+  },
+  "keywords": [
+    "wepin",
+    "wepinwallet",
+    "wallet"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@wepin/provider": "^0.0.5-alpha",
+    "@wepin/types": "^0.0.7",
+    "@wepin/widget-sdk": "^0.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.28",
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
+    "@wagmi/core": "^1.4.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.51.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2",
+    "viem": "^1.16.6"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

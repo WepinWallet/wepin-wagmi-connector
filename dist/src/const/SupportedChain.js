@@ -1,0 +1,25 @@
+export const SupportedChainId = [1, 5, 19, 137, 80001];
+export const SupportedChain = [
+    'ethereum',
+    'klaytn',
+    'bsc',
+    'polygon ',
+    'solana ',
+    'xdai',
+    'avalanche',
+    'arbitrum',
+    'boba',
+    'fantom',
+    'celo',
+    'metadium',
+    'kucoin',
+    'songbird',
+    'flare',
+    'oec',
+    'harmony',
+    'cronos',
+    'huobi',
+    'palm',
+    'oasys',
+];
+//# sourceMappingURL=SupportedChain.js.map

@@ -1,7 +1,7 @@
 import { BaseError } from 'viem'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 
-export const Connect = () => {
+export function Connect() {
   const { connector, isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect()
@@ -9,7 +9,6 @@ export const Connect = () => {
 
   return (
     <div>
-      <h2>useConnect</h2>
       <div>
         {isConnected && (
           <button onClick={() => disconnect()}>

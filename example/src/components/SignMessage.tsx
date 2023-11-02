@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { recoverMessageAddress } from 'viem'
 import { type Address, useSignMessage } from 'wagmi'
 
-export const SignMessage = () => {
+export function SignMessage() {
   const [recoveredAddress, setRecoveredAddress] = useState<Address>()
   const {
     data: signature,
@@ -25,8 +25,7 @@ export const SignMessage = () => {
   }, [signature, variables?.message])
 
   return (
-    <div>
-      <h2>useSignMessage</h2>
+    <>
       <form
         onSubmit={(event) => {
           event.preventDefault()
@@ -49,6 +48,6 @@ export const SignMessage = () => {
         </div>
       )}
       {error && <div>Error: {error?.message}</div>}
-    </div>
+    </>
   )
 }

@@ -1,29 +1,16 @@
 import { configureChains, createConfig } from 'wagmi'
-import {
-  mainnet,
-  goerli,
-  songbird,
-  polygon,
-  polygonMumbai,
-  klaytn,
-} from 'wagmi/chains'
+import { goerli, mainnet } from 'wagmi/chains'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { publicProvider } from 'wagmi/providers/public'
 import {
   WepinConnector,
   type WepinConnectorOptions,
 } from '@wepin/wagmi-connector'
-import { publicProvider } from 'wagmi/providers/public'
 
-// Provider Support Networks: https://www.npmjs.com/package/@wepin/provider
-const { chains, publicClient } = configureChains(
-  [
-    mainnet, // 1, ethereum
-    goerli, // 5, evmeth-goerlis
-    songbird, // 19, evmsongbird
-    polygon, // 137, evmpolygon
-    klaytn, // 8217, klaytn
-    polygonMumbai, // 80001, evmpolygon-testnet
-  ],
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [mainnet, ...(import.meta.env?.MODE === 'development' ? [] : [])],
   [publicProvider()],
 )
 
@@ -39,12 +26,21 @@ export const config = createConfig({
       chains,
       options: connectorOptions,
     }),
-    new MetaMaskConnector({
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
       chains,
       options: {
+        appName: 'wagmi',
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
         shimDisconnect: true,
       },
     }),
   ],
   publicClient,
+  webSocketPublicClient,
 })

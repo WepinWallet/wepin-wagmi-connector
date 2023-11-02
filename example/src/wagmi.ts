@@ -15,8 +15,8 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 )
 
 const connectorOptions: WepinConnectorOptions = {
-  appId: '',
-  appKey: 'ak_dev_QLL1K1YdEDnd0cN22rnm75Zo303tMHnHFhKeiyAQ68Q',
+  appId: 'YOUR_APP_ID',
+  appKey: 'YOUR_APP_KEY',
 }
 
 export const config = createConfig({

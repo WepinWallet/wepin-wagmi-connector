@@ -1,19 +1,7 @@
-import { useState } from 'react'
-import type { Hex } from 'viem'
 import { useWatchPendingTransactions } from 'wagmi'
 
-export function WatchPendingTransactions() {
-  const [hashes, setHashes] = useState<Hex[]>([])
-  useWatchPendingTransactions({
-    listener: (hashes) => setHashes((x) => [...x, ...hashes]),
-  })
+export const WatchPendingTransactions = () => {
+  useWatchPendingTransactions({ listener: (tx) => console.log(tx) })
 
-  return (
-    <div>
-      <details>
-        <summary>{hashes.length} hashes logged</summary>
-        {hashes.reverse().join('\n')}
-      </details>
-    </div>
-  )
+  return null
 }

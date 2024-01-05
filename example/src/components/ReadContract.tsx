@@ -1,30 +1,38 @@
 import { useState } from 'react'
-import { BaseError } from 'viem'
-import { type Address, useContractRead } from 'wagmi'
+import type { Address } from 'wagmi'
+import { useContractRead } from 'wagmi'
 
-import { wagmiContractConfig } from './contracts'
+import { wagmigotchiAbi } from './wagmigotchi-abi'
 
-export function ReadContract() {
+const wagmigotchiContractConfig = {
+  address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1' as const,
+  abi: wagmigotchiAbi,
+}
+
+export const ReadContract = () => {
   return (
     <div>
       <div>
-        <BalanceOf />
-        <br />
-        <TotalSupply />
+        <GetAlive />
       </div>
+      {false && (
+        <div>
+          <Love />
+        </div>
+      )}
     </div>
   )
 }
 
-function TotalSupply() {
-  const { data, isRefetching, refetch } = useContractRead({
-    ...wagmiContractConfig,
-    functionName: 'totalSupply',
+const GetAlive = () => {
+  const { data, isRefetching, isSuccess, refetch } = useContractRead({
+    ...wagmigotchiContractConfig,
+    functionName: 'getAlive',
   })
 
   return (
     <div>
-      Total Supply: {data?.toString()}
+      Is wagmigotchi alive?: {isSuccess && <span>{data ? 'yes' : 'no'}</span>}
       <button
         disabled={isRefetching}
         onClick={() => refetch()}
@@ -36,22 +44,22 @@ function TotalSupply() {
   )
 }
 
-function BalanceOf() {
+const Love = () => {
   const [address, setAddress] = useState<Address>(
-    '0xa5cc3c03994DB5b0d9A5eEdD10CabaB0813678AC',
+    '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
   )
-  const { data, error, isLoading, isSuccess } = useContractRead({
-    ...wagmiContractConfig,
-    functionName: 'balanceOf',
+  const { data, isFetching, isRefetching, isSuccess } = useContractRead({
+    ...wagmigotchiContractConfig,
+    functionName: 'love',
     args: [address],
     enabled: Boolean(address),
   })
 
-  const [value, setValue] = useState<string>(address)
+  const [value, setValue] = useState('')
 
   return (
     <div>
-      Token balance: {isSuccess && data?.toString()}
+      Get wagmigotchi love:
       <input
         onChange={(e) => setValue(e.target.value)}
         placeholder="wallet address"
@@ -59,9 +67,13 @@ function BalanceOf() {
         value={value}
       />
       <button onClick={() => setAddress(value as Address)}>
-        {isLoading ? 'fetching...' : 'fetch'}
+        {isFetching
+          ? isRefetching
+            ? 'refetching...'
+            : 'fetching...'
+          : 'fetch'}
       </button>
-      {error && <div>{(error as BaseError).shortMessage}</div>}
+      {isSuccess && <div>{data?.toString()}</div>}
     </div>
   )
 }

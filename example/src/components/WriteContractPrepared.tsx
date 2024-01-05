@@ -1,61 +1,26 @@
-import { useState } from 'react'
-import { BaseError } from 'viem'
-import {
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from 'wagmi'
+import { BigNumber } from 'ethers'
+import { useContractWrite, usePrepareContractWrite } from 'wagmi'
 
-import { wagmiContractConfig } from './contracts'
-import { useDebounce } from '../hooks/useDebounce'
-import { stringify } from '../utils/stringify'
+import { anvAbi } from './anv-abi'
 
-export function WriteContractPrepared() {
-  const [tokenId, setTokenId] = useState('')
-  const debouncedTokenId = useDebounce(tokenId)
-
+export const WriteContractPrepared = () => {
   const { config } = usePrepareContractWrite({
-    ...wagmiContractConfig,
-    functionName: 'mint',
-    enabled: Boolean(debouncedTokenId),
-    args: [BigInt(debouncedTokenId)],
+    address: '0xe614fbd03d58a60fd9418d4ab5eb5ec6c001415f',
+    abi: anvAbi,
+    functionName: 'claim',
+    args: [BigNumber.from('56')],
   })
-  const { write, data, error, isLoading, isError } = useContractWrite(config)
-  const {
-    data: receipt,
-    isLoading: isPending,
-    isSuccess,
-  } = useWaitForTransaction({ hash: data?.hash })
+  const { write, data, error, isLoading, isError, isSuccess } =
+    useContractWrite(config)
 
   return (
-    <>
-      <h3>Mint a wagmi</h3>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          write?.()
-        }}
-      >
-        <input
-          placeholder="token id"
-          onChange={(e) => setTokenId(e.target.value)}
-        />
-        <button disabled={!write} type="submit">
-          Mint
-        </button>
-      </form>
-
-      {isLoading && <div>Check wallet...</div>}
-      {isPending && <div>Transaction pending...</div>}
-      {isSuccess && (
-        <>
-          <div>Transaction Hash: {data?.hash}</div>
-          <div>
-            Transaction Receipt: <pre>{stringify(receipt, null, 2)}</pre>
-          </div>
-        </>
-      )}
-      {isError && <div>{(error as BaseError)?.shortMessage}</div>}
-    </>
+    <div>
+      <div>Mint an Adjective Noun Verb:</div>
+      <button disabled={isLoading || !write} onClick={() => write?.()}>
+        Mint
+      </button>
+      {isError && <div>{error?.message}</div>}
+      {isSuccess && <div>Transaction hash: {data?.hash}</div>}
+    </div>
   )
 }

@@ -1,8 +1,8 @@
-import { Address, Chain, Connector, ConnectorData, WalletClient } from '@wagmi/core';
+import { Address, Chain, Connector, ConnectorData } from '@wagmi/core';
 import '@wepin/widget-sdk';
-import '@wepin/provider';
-import type { BaseProvider } from '@wepin/provider';
+import type { BaseProvider } from '@wepin/widget-sdk';
 import { WepinConnectorOptions } from './types';
+import { providers } from 'ethers';
 export declare class WepinConnector extends Connector<BaseProvider, WepinConnectorOptions> {
     #private;
     readonly ready: boolean;
@@ -12,16 +12,16 @@ export declare class WepinConnector extends Connector<BaseProvider, WepinConnect
         chains?: Chain[];
         options: WepinConnectorOptions;
     });
-    connect(): Promise<Required<ConnectorData>>;
+    connect(): Promise<Required<ConnectorData<BaseProvider>>>;
     disconnect(): Promise<void>;
     getAccount(): Promise<Address>;
     getChainId(): Promise<number>;
     getProvider({ chainId }: {
         chainId: number;
     }): Promise<BaseProvider>;
-    getWalletClient({ chainId, }?: {
+    getSigner({ chainId, }?: {
         chainId?: number;
-    }): Promise<WalletClient>;
+    }): Promise<providers.JsonRpcSigner>;
     isAuthorized(): Promise<boolean>;
     switchChain(chainId: number): Promise<Chain>;
     protected isChainUnsupported(chainId: number): boolean;

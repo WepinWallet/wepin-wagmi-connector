@@ -1,32 +1,30 @@
-import { BaseError } from 'viem'
-import { useAccount, useConnect, useDisconnect } from 'wagmi'
+import { useAccount, useConnect } from 'wagmi'
 
-export function Connect() {
-  const { connector, isConnected } = useAccount()
-  const { connect, connectors, error, isLoading, pendingConnector } =
+import { useIsMounted } from '../hooks'
+
+export const Connect = () => {
+  const isMounted = useIsMounted()
+  const { connector, isReconnecting } = useAccount()
+  const { connect, connectors, isLoading, error, pendingConnector } =
     useConnect()
-  const { disconnect } = useDisconnect()
 
   return (
     <div>
       <div>
-        {isConnected && (
-          <button onClick={() => disconnect()}>
-            Disconnect from {connector?.name}
+        {connectors.map((x) => (
+          <button
+            disabled={!x.ready || isReconnecting || connector?.id === x.id}
+            key={x.name}
+            onClick={() => connect({ connector: x })}
+          >
+            {x.id === 'injected' ? (isMounted ? x.name : x.id) : x.name}
+            {isMounted && !x.ready && ' (unsupported)'}
+            {isLoading && x.id === pendingConnector?.id && '…'}
           </button>
-        )}
-
-        {connectors
-          .filter((x) => x.ready && x.id !== connector?.id)
-          .map((x) => (
-            <button key={x.id} onClick={() => connect({ connector: x })}>
-              {x.name}
-              {isLoading && x.id === pendingConnector?.id && ' (connecting)'}
-            </button>
-          ))}
+        ))}
       </div>
 
-      {error && <div>{(error as BaseError).shortMessage}</div>}
+      <div>{error && error.message}</div>
     </div>
   )
 }

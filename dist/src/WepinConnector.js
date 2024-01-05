@@ -19,12 +19,12 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _WepinConnector_provider, _WepinConnector_wepinInstance;
-import { Connector, } from '@wagmi/core';
-import { SwitchChainError, UserRejectedRequestError, createWalletClient, custom, getAddress, numberToHex, } from 'viem';
+import { Connector } from '@wagmi/core';
+import { SwitchChainError, UserRejectedRequestError, getAddress, numberToHex, } from 'viem';
 import '@wepin/widget-sdk';
-import '@wepin/provider';
 import { formatChainId } from './utils';
 import { SupportedChainId } from './const';
+import { providers } from 'ethers';
 export class WepinConnector extends Connector {
     constructor({ chains, options, }) {
         super({ chains, options });
@@ -50,13 +50,17 @@ export class WepinConnector extends Connector {
                 }
                 else {
                     const accounts = yield __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").getAccounts();
-                    const network = (_c = (_b = accounts === null || accounts === void 0 ? void 0 : accounts[0]) === null || _b === void 0 ? void 0 : _b.network) !== null && _c !== void 0 ? _c : 'ethereum';
+                    const network = ((_c = (_b = accounts === null || accounts === void 0 ? void 0 : accounts[0]) === null || _b === void 0 ? void 0 : _b.network) !== null && _c !== void 0 ? _c : 'ethereum');
                     __classPrivateFieldSet(this, _WepinConnector_provider, __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").getProvider({ network }), "f");
                 }
                 const account = yield this.getAccount();
                 const id = yield this.getChainId();
                 const unsupported = this.isChainUnsupported(id);
-                return { account, chain: { id, unsupported } };
+                return {
+                    account,
+                    chain: { id, unsupported },
+                    provider: __classPrivateFieldGet(this, _WepinConnector_provider, "f"),
+                };
             }
             catch (error) {
                 if (/user rejected/i.test(error === null || error === void 0 ? void 0 : error.message)) {
@@ -106,17 +110,13 @@ export class WepinConnector extends Connector {
             return __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").getProvider({ network });
         });
     }
-    getWalletClient({ chainId, } = {}) {
+    getSigner({ chainId, } = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             const account = yield this.getAccount();
             const chain = this.chains.find((x) => x.id === chainId);
             if (!__classPrivateFieldGet(this, _WepinConnector_provider, "f"))
                 throw new Error('provider is required.');
-            return createWalletClient({
-                account,
-                chain,
-                transport: custom(__classPrivateFieldGet(this, _WepinConnector_provider, "f")),
-            });
+            return new providers.Web3Provider(__classPrivateFieldGet(this, _WepinConnector_provider, "f"), chain === null || chain === void 0 ? void 0 : chain.id).getSigner(account);
         });
     }
     isAuthorized() {

@@ -2,21 +2,20 @@ import { useState } from 'react'
 import type { Address } from 'wagmi'
 import { useAccount, useBalance } from 'wagmi'
 
-export function Balance() {
+export const Balance = () => {
   return (
-    <>
+    <div>
       <div>
         <AccountBalance />
       </div>
-      <br />
       <div>
         <FindBalance />
       </div>
-    </>
+    </div>
   )
 }
 
-export function AccountBalance() {
+const AccountBalance = () => {
   const { address } = useAccount()
   const { data, refetch } = useBalance({
     address,
@@ -26,12 +25,12 @@ export function AccountBalance() {
   return (
     <div>
       {data?.formatted}
-      <button onClick={() => refetch()}>refetch</button>
+      <button onClick={() => refetch()}>fetch</button>
     </div>
   )
 }
 
-export function FindBalance() {
+const FindBalance = () => {
   const [address, setAddress] = useState('')
   const { data, isLoading, refetch } = useBalance({
     address: address as Address,

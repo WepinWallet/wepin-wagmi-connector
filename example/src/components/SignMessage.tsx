@@ -1,53 +1,43 @@
-import { useEffect, useState } from 'react'
-import { recoverMessageAddress } from 'viem'
-import { type Address, useSignMessage } from 'wagmi'
+import { verifyMessage } from 'ethers/lib/utils'
+import { useSignMessage } from 'wagmi'
 
-export function SignMessage() {
-  const [recoveredAddress, setRecoveredAddress] = useState<Address>()
-  const {
-    data: signature,
-    variables,
-    error,
-    isLoading,
-    signMessage,
-  } = useSignMessage()
-
-  useEffect(() => {
-    ;(async () => {
-      if (variables?.message && signature) {
-        const recoveredAddress = await recoverMessageAddress({
-          message: variables?.message,
-          signature,
-        })
-        setRecoveredAddress(recoveredAddress)
-      }
-    })()
-  }, [signature, variables?.message])
+export const SignMessage = () => {
+  const signMessage = useSignMessage()
 
   return (
-    <>
+    <div>
       <form
         onSubmit={(event) => {
           event.preventDefault()
           const element = event.target as HTMLFormElement
           const formData = new FormData(element)
           const message = formData.get('message') as string
-          signMessage({ message })
+          signMessage.signMessage({ message })
         }}
       >
         <input name="message" type="text" required />
-        <button disabled={isLoading} type="submit">
-          {isLoading ? 'Check Wallet' : 'Sign Message'}
+        <button disabled={signMessage.isLoading}>
+          {signMessage.isLoading ? 'Check Wallet' : 'Sign Message'}
         </button>
       </form>
 
-      {signature && (
+      {signMessage.data && (
         <div>
-          <div>Signature: {signature}</div>
-          <div>Recovered address: {recoveredAddress}</div>
+          <div>signature {signMessage.data}</div>
+          <div>
+            recovered address{' '}
+            {verifyMessage(
+              signMessage.variables?.message as string,
+              signMessage.data,
+            )}
+          </div>
         </div>
       )}
-      {error && <div>Error: {error?.message}</div>}
-    </>
+
+      <div>
+        {signMessage.error &&
+          (signMessage.error?.message ?? 'Failed to sign message')}
+      </div>
+    </div>
   )
 }

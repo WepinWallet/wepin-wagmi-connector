@@ -1,6 +1,6 @@
 {
   "name": "@wepin/wagmi-connector",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "Wepin wagmi connector",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -26,18 +26,18 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@wepin/provider": "^0.0.5-alpha",
     "@wepin/types": "^0.0.7",
-    "@wepin/widget-sdk": "^0.3.1"
+    "@wepin/widget-sdk": "v0.4.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.28",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
-    "@wagmi/core": "^1.4.5",
+    "@wagmi/core": "0.10.17",
     "cross-env": "^7.0.3",
     "eslint": "^8.51.0",
     "eslint-plugin-prettier": "^5.0.1",
+    "ethers": "^5.7.2",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "viem": "^1.16.6"

@@ -8,6 +8,10 @@ Contact to wepin.contact@iotrust.kr
 
 ## ⏩ Information
 
+### Support Version
+
+![wagmi version](https://img.shields.io/badge/wagmi-0.12.x-green)
+
 ### Support Networks
 
 <details>
@@ -22,6 +26,7 @@ Contact to wepin.contact@iotrust.kr
 | 19       | Songbird Canary Network | evmsongbird        |
 | 137      | Polygon Mainnet         | evmpolygon         |
 | 1001     | Klaytn Testnet          | klaytn-testnet     |
+| 2731     | Time Testnet            | evmtime-elizabeth  |
 | 8217     | Klaytn Mainnet          | klaytn             |
 | 80001    | Polygon Mumbai          | evmpolygon-testnet |
 
@@ -86,7 +91,7 @@ const connectorOptions: WepinConnectorOptions = {
 ### 3. Add to Connectors
 
 ```ts
-export const config = createConfig({
+const client = createClient({
   connectors: [
     // ...Other Connectors,
     new WepinConnector({
@@ -94,25 +99,47 @@ export const config = createConfig({
       options: connectorOptions,
     }),
   ],
-  publicClient,
+  provider,
 })
 ```
 
+### 4. Wrap app with `WagmiConfig`
+
+```tsx
+import { WagmiConfig } from 'wagmi'
+
+// ...
+
+function App() {
+  return (
+    <WagmiConfig client={client}>
+      <YourRoutes />
+    </WagmiConfig>
+  )
+}
+```
+
 <details>
-<summary>View Sources -> <i>wagmi.ts</i></summary>
+<summary>View Sources -> <i>App.ts</i></summary>
 
-```ts
-import { configureChains, createConfig } from 'wagmi'
-import { mainnet, polygon } from 'wagmi/chains'
+```tsx
+import { WagmiConfig, configureChains, createClient } from 'wagmi'
+import { avalanche, goerli, mainnet, optimism } from 'wagmi/chains'
+
+import {
+  WepinConnector,
+  type WepinConnectorOptions,
+} from '@wepin/wagmi-connector'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+
 import { publicProvider } from 'wagmi/providers/public'
-import { WepinConnector, WepinConnectorOptions } from '@wepin/wagmi-connector'
+import { Account, Connect, NetworkSwitcher } from './components'
 
-const { chains, publicClient } = configureChains(
-  [
-    mainnet, // 1, ethereum
-    polygon, // 137, evmpolygon
-  ],
+const { chains, provider, webSocketProvider } = configureChains(
+  [mainnet, goerli, optimism, avalanche],
   [publicProvider()],
+  { targetQuorum: 1 },
 )
 
 const connectorOptions: WepinConnectorOptions = {
@@ -120,35 +147,32 @@ const connectorOptions: WepinConnectorOptions = {
   appKey: 'YOUR_APP_KEY',
 }
 
-export const config = createConfig({
+const client = createClient({
+  autoConnect: true,
   connectors: [
     new WepinConnector({
       chains,
       options: connectorOptions,
     }),
   ],
-  publicClient,
+  provider,
+  webSocketProvider,
 })
 
-// wagmi.ts
+export const App = () => {
+  return (
+    <>
+      <WagmiConfig client={client}>
+        <YourRoutes />
+      </WagmiConfig>
+    </>
+  )
+}
+
+// App.tsx
 ```
 
 </details>
-
-### 4. Wrap app with `WagmiConfig`
-
-```tsx
-import { WagmiConfig } from 'wagmi'
-import { config } from './wagmi'
-
-function App() {
-  return (
-    <WagmiConfig config={config}>
-      <YourRoutes />
-    </WagmiConfig>
-  )
-}
-```
 
 ## ⏩ You're good to go!
 

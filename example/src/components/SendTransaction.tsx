@@ -1,47 +1,29 @@
-import { parseEther } from 'viem'
-import { useSendTransaction, useWaitForTransaction } from 'wagmi'
+import { BigNumber } from 'ethers'
+import { useSendTransaction } from 'wagmi'
 
-import { stringify } from '../utils/stringify'
+export const SendTransaction = () => {
+  const { data, isIdle, isLoading, isSuccess, isError, sendTransaction } =
+    useSendTransaction({
+      mode: 'recklesslyUnprepared',
+      request: {
+        to: '0xc961145a54C96E3aE9bAA048c4F4D6b04C13916b',
+        value: BigNumber.from('10000000000000000'), // 0.01 ETH
+      },
+    })
 
-export function SendTransaction() {
-  const { data, error, isLoading, isError, sendTransaction } =
-    useSendTransaction()
-  const {
-    data: receipt,
-    isLoading: isPending,
-    isSuccess,
-  } = useWaitForTransaction({ hash: data?.hash })
+  if (isLoading) return <div>Check Wallet</div>
+
+  if (isIdle)
+    return (
+      <button disabled={isLoading} onClick={() => sendTransaction()}>
+        Send Transaction
+      </button>
+    )
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          const formData = new FormData(e.target as HTMLFormElement)
-          const address = formData.get('address') as string
-          const value = formData.get('value') as `${number}`
-          sendTransaction({
-            to: address,
-            value: parseEther(value),
-          })
-        }}
-      >
-        <input name="address" placeholder="address" />
-        <input name="value" placeholder="value (ether)" />
-        <button type="submit">Send</button>
-      </form>
-
-      {isLoading && <div>Check wallet...</div>}
-      {isPending && <div>Transaction pending...</div>}
-      {isSuccess && (
-        <>
-          <div>Transaction Hash: {data?.hash}</div>
-          <div>
-            Transaction Receipt: <pre>{stringify(receipt, null, 2)}</pre>
-          </div>
-        </>
-      )}
-      {isError && <div>Error: {error?.message}</div>}
-    </>
+    <div>
+      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      {isError && <div>Error sending transaction</div>}
+    </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useBlockNumber } from 'wagmi'
 
-export function BlockNumber() {
+export const BlockNumber = () => {
   const { data } = useBlockNumber({ watch: true })
-  return <div>{data?.toString()}</div>
+  return <div>{data}</div>
 }

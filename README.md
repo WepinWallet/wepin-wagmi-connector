@@ -29,6 +29,7 @@ Contact to wepin.contact@iotrust.kr
 | 2731     | Time Testnet            | evmtime-elizabeth  |
 | 8217     | Klaytn Mainnet          | klaytn             |
 | 80001    | Polygon Mumbai          | evmpolygon-testnet |
+| 11155111 | Ethereum Sepolia        | evmeth sepolia     |
 
 </details>
 
@@ -44,15 +45,17 @@ Contact to wepin.contact@iotrust.kr
     - Defines the default network that the provider connects to during initialization
     - It defaults to the network of the User's first account.
 - `attributes` \<IAttributes> _optional_
-  - The `attributes` type extends [`@wepin/types`](https://github.com/WepinWallet/wepin-js-sdk-types) as `IAttributes`
-    - **type:**
-      - The type of display of widget as wepin is initiated (defalut: 'hide)
-        - 'hide' | 'show'
-    - **defaultLanguage:**
-      - Specifies the language displayed on the widget (default: 'ko')
-      - Currently, only 'ko' and 'en' are supported.
-    - **defaultCurrency:**
-      - Sets the currency displayed on the widget (default: 'KRW').
+  - **type:**
+    - The type of display of widget as wepin is initiated (defalut: 'hide)
+    - 'hide' | 'show'
+  - **defaultLanguage:**
+    - Specifies the language displayed on the widget (default: 'ko')
+    - Currently, only 'ko' and 'en' are supported.
+  - **defaultCurrency:**
+    - Sets the currency displayed on the widget (default: 'KRW').
+  - **loginProviders:**
+    - An array of login providers to configure the widget. (If not provided, all available login providers will be displayed on the widget.)
+    - The `loginProviders` parameter accepts values defined in the LoginProviders of `@wepin/types` , starting from version `v0.0.11`.
 
 </details>
 

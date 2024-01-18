@@ -1,1 +1,0 @@
-{"version":3,"file":"WindowTypes.d.ts","sourceRoot":"","sources":["../../../src/types/WindowTypes.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,KAAK,IAAI,aAAa,EAAE,MAAM,mBAAmB,CAAA;AAG/D,OAAO,CAAC,MAAM,CAAC;IACb,UAAU,MAAM;QACd,KAAK,EAAE,aAAa,GAAG,SAAS,CAAA;KACjC;CACF"}

@@ -1,4 +1,4 @@
-## [Version 0.1.2](https://github.com/WepinWallet/wepin-wagmi-connector/releases/tag/v0.1.2) (2024-01-09)
+## [Version 0.1.2](https://github.com/WepinWallet/wepin-wagmi-connector/releases/tag/v0.1.2) (2024-01-18)
 
 ### Updates:
 

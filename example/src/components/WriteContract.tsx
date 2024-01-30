@@ -1,41 +1,50 @@
-import { BigNumber } from 'ethers'
-import { useState } from 'react'
-import { useContractWrite } from 'wagmi'
+import { BaseError } from 'viem'
+import { useContractWrite, useWaitForTransaction } from 'wagmi'
 
-import { anvAbi } from './anv-abi'
+import { wagmiContractConfig } from './contracts'
+import { stringify } from '../utils/stringify'
 
-export const WriteContract = () => {
-  const { write, data, error, isLoading, isError, isSuccess } =
-    useContractWrite({
-      mode: 'recklesslyUnprepared',
-      address: '0xe614fbd03d58a60fd9418d4ab5eb5ec6c001415f',
-      abi: anvAbi,
-      functionName: 'claim',
-      chainId: 1,
-    })
-
-  const [tokenId, setTokenId] = useState<string>('')
+export function WriteContract() {
+  const { write, data, error, isLoading, isError } = useContractWrite({
+    ...wagmiContractConfig,
+    functionName: 'mint',
+  })
+  const {
+    data: receipt,
+    isLoading: isPending,
+    isSuccess,
+  } = useWaitForTransaction({ hash: data?.hash })
 
   return (
-    <div>
-      <div>Mint an Adjective Noun Verb:</div>
-      <div>
-        <input
-          onChange={(e) => setTokenId(e.target.value)}
-          placeholder="token id"
-          value={tokenId}
-        />
-        <button
-          disabled={isLoading}
-          onClick={() =>
-            write?.({ recklesslySetUnpreparedArgs: [BigNumber.from(tokenId)] })
-          }
-        >
+    <>
+      <h3>Mint a wagmi</h3>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          const formData = new FormData(e.target as HTMLFormElement)
+          const tokenId = formData.get('tokenId') as string
+          write({
+            args: [BigInt(tokenId)],
+          })
+        }}
+      >
+        <input name="tokenId" placeholder="token id" />
+        <button disabled={isLoading} type="submit">
           Mint
         </button>
-      </div>
-      {isError && <div>{error?.message}</div>}
-      {isSuccess && <div>Transaction hash: {data?.hash}</div>}
-    </div>
+      </form>
+
+      {isLoading && <div>Check wallet...</div>}
+      {isPending && <div>Transaction pending...</div>}
+      {isSuccess && (
+        <>
+          <div>Transaction Hash: {data?.hash}</div>
+          <div>
+            Transaction Receipt: <pre>{stringify(receipt, null, 2)}</pre>
+          </div>
+        </>
+      )}
+      {isError && <div>{(error as BaseError)?.shortMessage}</div>}
+    </>
   )
 }

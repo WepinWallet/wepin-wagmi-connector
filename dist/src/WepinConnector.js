@@ -18,7 +18,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _WepinConnector_provider, _WepinConnector_wepinInstance;
+var _WepinConnector_provider, _WepinConnector_wepinInstance, _WepinConnector_loginData;
 import { Connector, } from '@wagmi/core';
 import { SwitchChainError, UserRejectedRequestError, createWalletClient, custom, getAddress, numberToHex, } from 'viem';
 import '@wepin/widget-sdk';
@@ -31,6 +31,7 @@ export class WepinConnector extends Connector {
         this.name = 'Wepin';
         _WepinConnector_provider.set(this, null);
         _WepinConnector_wepinInstance.set(this, void 0);
+        _WepinConnector_loginData.set(this, null);
         __classPrivateFieldSet(this, _WepinConnector_wepinInstance, window.Wepin, "f");
     }
     connect() {
@@ -41,9 +42,12 @@ export class WepinConnector extends Connector {
                 yield __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").init(appId, appKey, attributes);
             }
             try {
-                yield __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").login();
+                __classPrivateFieldSet(this, _WepinConnector_loginData, yield __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").login(), "f");
                 if ((_a = this.options) === null || _a === void 0 ? void 0 : _a.defaultChainId) {
                     const chainId = this.options.defaultChainId;
+                    if (this.isChainUnsupported(chainId)) {
+                        throw new Error(`${chainId} is an unsupported chain in your App.`);
+                    }
                     __classPrivateFieldSet(this, _WepinConnector_provider, yield this.getProvider({ chainId }), "f");
                 }
                 else {
@@ -66,6 +70,7 @@ export class WepinConnector extends Connector {
     }
     disconnect() {
         return __awaiter(this, void 0, void 0, function* () {
+            __classPrivateFieldSet(this, _WepinConnector_loginData, null, "f");
             __classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").finalize();
         });
     }
@@ -109,7 +114,7 @@ export class WepinConnector extends Connector {
             const account = yield this.getAccount();
             const chain = this.chains.find((x) => x.id === chainId);
             if (!__classPrivateFieldGet(this, _WepinConnector_provider, "f"))
-                throw new Error('provider is required.');
+                throw new Error('Provider is not available.');
             return createWalletClient({
                 account,
                 chain,
@@ -178,6 +183,13 @@ export class WepinConnector extends Connector {
     onDisconnect() {
         this.emit('disconnect');
     }
+    getLoginData() {
+        if (__classPrivateFieldGet(this, _WepinConnector_wepinInstance, "f").getStatus() !== 'login') {
+            __classPrivateFieldSet(this, _WepinConnector_loginData, null, "f");
+            throw new Error('You have not logged in yet.');
+        }
+        return __classPrivateFieldGet(this, _WepinConnector_loginData, "f");
+    }
 }
-_WepinConnector_provider = new WeakMap(), _WepinConnector_wepinInstance = new WeakMap();
+_WepinConnector_provider = new WeakMap(), _WepinConnector_wepinInstance = new WeakMap(), _WepinConnector_loginData = new WeakMap();
 //# sourceMappingURL=WepinConnector.js.map

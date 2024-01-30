@@ -1,29 +1,18 @@
-import { BigNumber } from 'ethers'
 import { paginatedIndexesConfig, useContractInfiniteReads } from 'wagmi'
 
-export const mlootContractConfig = {
-  address: '0x1dfe7ca09e99d10835bf73044a23b73fc20623df',
-  abi: [
-    {
-      inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
-      name: 'tokenURI',
-      outputs: [{ internalType: 'string', name: '', type: 'string' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-  ],
-} as const
+import { wagmiContractConfig } from './contracts'
+import { stringify } from '../utils/stringify'
 
 export function ReadContractsInfinite() {
   const { data, isLoading, isSuccess, fetchNextPage } =
     useContractInfiniteReads({
       cacheKey: 'lootTokenURIs',
       ...paginatedIndexesConfig(
-        (index) => [
+        (index: number) => [
           {
-            ...mlootContractConfig,
-            functionName: 'tokenURI',
-            args: [BigNumber.from(index)] as const,
+            ...wagmiContractConfig,
+            functionName: 'ownerOf',
+            args: [BigInt(index)] as const,
           },
         ],
         { start: 0, perPage: 10, direction: 'increment' },
@@ -35,8 +24,12 @@ export function ReadContractsInfinite() {
       {isLoading && <div>loading...</div>}
       {isSuccess && (
         <>
-          {data?.pages.map((data) => (
-            <div key={JSON.stringify(data)}>{JSON.stringify(data)}</div>
+          {data?.pages.map((data, i) => (
+            <div key={i}>
+              {data.flatMap((x) => (
+                <pre key={stringify(x)}>{stringify(x)}</pre>
+              ))}
+            </div>
           ))}
           <button onClick={() => fetchNextPage()}>Fetch more</button>
         </>

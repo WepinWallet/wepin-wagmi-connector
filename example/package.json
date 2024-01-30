@@ -15,7 +15,7 @@
     "react-dom": "^18.2.0",
     "util": "^0.12.4",
     "viem": "1.18.9",
-    "wagmi": "^0.12.9"
+    "wagmi": "^1.4.3"
   },
   "devDependencies": {
     "@types/react": "^18.0.9",

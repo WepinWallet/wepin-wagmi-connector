@@ -1,26 +1,32 @@
 import { useNetwork, useSwitchNetwork } from 'wagmi'
 
-export const NetworkSwitcher = () => {
+export function NetworkSwitcher() {
   const { chain } = useNetwork()
-  const { chains, error, pendingChainId, switchNetwork, status } =
+  const { chains, error, isLoading, pendingChainId, switchNetwork } =
     useSwitchNetwork()
 
   return (
     <div>
-      {chain && <div>Using {chain.name}</div>}
+      <div>
+        Connected to {chain?.name ?? chain?.id}
+        {chain?.unsupported && ' (unsupported)'}
+      </div>
+      <br />
+      {switchNetwork && (
+        <div>
+          Switch to:{' '}
+          {chains.map((x) =>
+            x.id === chain?.id ? null : (
+              <button key={x.id} onClick={() => switchNetwork(x.id)}>
+                {x.name}
+                {isLoading && x.id === pendingChainId && ' (switching)'}
+              </button>
+            ),
+          )}
+        </div>
+      )}
 
-      {chains.map((x) => (
-        <button
-          disabled={!switchNetwork || x.id === chain?.id}
-          key={x.id}
-          onClick={() => switchNetwork?.(x.id)}
-        >
-          Switch to {x.name}
-          {status === 'loading' && x.id === pendingChainId && '…'}
-        </button>
-      ))}
-
-      <div>{error && (error?.message ?? 'Failed to switch')}</div>
+      <div>{error?.message}</div>
     </div>
   )
 }

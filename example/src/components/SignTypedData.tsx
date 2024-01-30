@@ -1,5 +1,6 @@
-import { verifyTypedData } from 'ethers/lib/utils'
-import { useSignTypedData } from 'wagmi'
+import { useEffect, useState } from 'react'
+import { recoverTypedDataAddress } from 'viem'
+import { type Address, useSignTypedData } from 'wagmi'
 
 const domain = {
   name: 'Ether Mail',
@@ -8,7 +9,6 @@ const domain = {
   verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
 } as const
 
-// The named list of all type definitions
 const types = {
   Person: [
     { name: 'name', type: 'string' },
@@ -21,7 +21,7 @@ const types = {
   ],
 } as const
 
-const value = {
+const message = {
   from: {
     name: 'Cow',
     wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
@@ -33,29 +33,43 @@ const value = {
   contents: 'Hello, Bob!',
 } as const
 
-export const SignTypedData = () => {
+export function SignTypedData() {
   const { data, error, isLoading, signTypedData } = useSignTypedData({
     domain,
     types,
-    value,
+    message,
+    primaryType: 'Mail',
   })
 
+  const [recoveredAddress, setRecoveredAddress] = useState<Address>()
+  useEffect(() => {
+    if (!data) return
+    ;(async () => {
+      setRecoveredAddress(
+        await recoverTypedDataAddress({
+          domain,
+          types,
+          message,
+          primaryType: 'Mail',
+          signature: data,
+        }),
+      )
+    })()
+  }, [data])
+
   return (
-    <div>
+    <>
       <button disabled={isLoading} onClick={() => signTypedData()}>
         {isLoading ? 'Check Wallet' : 'Sign Message'}
       </button>
 
       {data && (
         <div>
-          <div>signature {data}</div>
-          <div>
-            recovered address {verifyTypedData(domain, types, value, data)}
-          </div>
+          <div>Signature: {data}</div>
+          <div>Recovered address {recoveredAddress}</div>
         </div>
       )}
-
-      <div>{error && (error?.message ?? 'Failed to sign message')}</div>
-    </div>
+      {error && <div>Error: {error?.message}</div>}
+    </>
   )
 }

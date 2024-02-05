@@ -1,6 +1,6 @@
 {
   "name": "@wepin/wagmi-connector",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Wepin wagmi connector",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -27,7 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "@wepin/types": "^0.0.11",
-    "@wepin/widget-sdk": "v0.5.1"
+    "@wepin/widget-sdk": "v0.5.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.28",

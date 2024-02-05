@@ -1,8 +1,8 @@
 import { Address, Chain, Connector, ConnectorData, WalletClient } from '@wagmi/core';
+import { IWepinUser } from '@wepin/types';
 import '@wepin/widget-sdk';
 import type { BaseProvider } from '@wepin/widget-sdk';
 import { WepinConnectorOptions } from './types';
-import { IWepinUser } from '@wepin/types';
 export declare class WepinConnector extends Connector<BaseProvider, WepinConnectorOptions> {
     #private;
     readonly ready: boolean;

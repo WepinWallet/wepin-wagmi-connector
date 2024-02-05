@@ -20,8 +20,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _WepinConnector_provider, _WepinConnector_wepinInstance, _WepinConnector_loginData;
 import { Connector, } from '@wagmi/core';
-import { SwitchChainError, UserRejectedRequestError, createWalletClient, custom, getAddress, numberToHex, } from 'viem';
 import '@wepin/widget-sdk';
+import { SwitchChainError, UserRejectedRequestError, createWalletClient, custom, getAddress, numberToHex, } from 'viem';
 import { formatChainId } from './utils';
 export class WepinConnector extends Connector {
     constructor({ chains, options, }) {
@@ -79,12 +79,9 @@ export class WepinConnector extends Connector {
             if (!__classPrivateFieldGet(this, _WepinConnector_provider, "f")) {
                 throw new Error('Provider is not ready.');
             }
-            if (__classPrivateFieldGet(this, _WepinConnector_provider, "f").selectedAddress) {
-                return __classPrivateFieldGet(this, _WepinConnector_provider, "f").selectedAddress;
-            }
             try {
                 const account = (yield __classPrivateFieldGet(this, _WepinConnector_provider, "f").request({
-                    method: 'eth_accounts',
+                    method: 'eth_requestAccounts',
                 }));
                 return getAddress(account[0]);
             }

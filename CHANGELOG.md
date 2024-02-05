@@ -1,3 +1,11 @@
+## [Version 0.1.4](https://github.com/WepinWallet/wepin-wagmi-connector/releases/tag/v0.1.4) (2024-02-05)
+
+### Updates:
+
+- Modified to prevent the regeneration of the `requestAccounts` popup from `connect` to `disconnect`.
+- Fixed errors related to `eth_accounts`.
+- Enhanced error details provided for `init`.
+
 ## [Version 0.1.3](https://github.com/WepinWallet/wepin-wagmi-connector/releases/tag/v0.1.3) (2024-01-26)
 
 ### Updates:
